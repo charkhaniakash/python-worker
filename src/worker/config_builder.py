@@ -297,9 +297,6 @@ async def build_config_from_persona(
     return config
 
 
-def apply_outbound_call_opening(config: AgentConfig) -> None:
-    settings = get_settings()
-    config.llm.system_prompt += settings.runtime.prompts.outbound_call_opening
 
 
 def resolve_chat_language(config: AgentConfig) -> str:
