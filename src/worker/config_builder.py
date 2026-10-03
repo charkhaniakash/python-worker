@@ -1,4 +1,4 @@
-"""
+лект
 Persona → runtime `AgentConfig` builder.
 
 Everything the pipeline needs to start (STT settings, LLM model+temperature,
@@ -188,8 +188,28 @@ def default_agent_config(conv: ConvLog) -> AgentConfig:
     selected = random.choice(personas)
     conv.line("INFO", "CONFIG", f"Selected survey persona: {selected['name']} ({selected['gender']})")
     
-    # Use Hindi greeting by default (production requirement)
-    survey_greeting = selected["greeting_hi"]
+    # Ensure a default Hindi greeting is always available, for use if selected persona's 'greeting_hi' is empty.
+    default_hindi_greeting_template = settings.runtime.agent.default_greeting_template
+    if default_hindi_greeting_template and isinstance(default_hindi_greeting_template, str): # Ensure it's a string
+        hindi_fallback = default_hindi_greeting_template.format(name=selected["name"])
+    else:
+        hindi_fallback = "नमस्ते, मैं एक सहायक हूँ।"
+
+    # Use the persona's Hindi greeting if available and non-empty, otherwise use the generated Hindi fallback.
+    hi_greeting = selected["greeting_hi"] if selected["greeting_hi"] else hindi_fallback
+    
+    # Prepare the localized greetings map, ensuring 'hi' always has a value.
+    localized_greetings_map = {
+        "hi": hi_greeting,
+        "en": selected["greeting_en"],
+    }
+    
+    survey_greeting = _resolve_localized_message(
+        json.dumps(localized_greetings_map),
+        lang.language_preference,
+        lang.default_language,
+        hi_greeting, # Pass the guaranteed Hindi greeting as the ultimate fallback
+    )
     
     system_prompt = _assemble_system_prompt(
         "You are a helpful voice assistant conducting a survey. Be concise, accurate, and friendly.",
