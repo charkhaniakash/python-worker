@@ -1,0 +1,419 @@
+# =============================================================================
+# builderv2 worker — runtime defaults
+#
+# Every value here can be overridden via environment variables (see
+# src/worker/settings.py for the mapping). Nothing operational should be
+# hardcoded in code — extend this file first.
+# =============================================================================
+
+agent:
+  # Registered worker name. MUST match the backend's SIP dispatch rule target.
+  # Override with $AGENT_NAME.
+  name: sip-agent-gupshup-test
+
+  # Fallback name used only if a persona resolves to no name.
+  default_display_name: Assistant
+  # Fallback greeting if the persona has none set.
+  default_greeting_template: "Hello! I'm {name}. How can I help you today?"
+
+backend:
+  # Base URL for the internal HTTP API (persona, phone-lookup, call-log, usage).
+  # Override with $BACKEND_URL.
+  base_url: https://api.staging.testing.builder.bharatgpt.ai
+  # Milliseconds. Applied to every backend call unless overridden per-route.
+  default_timeout_ms: 5000
+  # Retry policy for persona fetch (transient hiccups drop us to default config
+  # otherwise — expensive UX regression).
+  persona_fetch:
+    attempts: 3
+    per_attempt_timeout_ms: 5000
+    backoff_base_ms: 300  # multiplied by attempt number
+  # Call usage report is fire-and-forget — never block teardown.
+  usage_report:
+    timeout_ms: 5000
+  # Inbound call-log creation.
+  call_started:
+    timeout_ms: 5000
+
+chat:
+  # BharatGPT SSE chat backend. If unset, derived from backend.base_url +
+  # chat.path. Override URL with $CHAT_API_URL.
+  url: null
+  # Path appended to backend.base_url when chat.url is null.
+  path: /agentic_builder/chat
+  # If false OR missing appId/partnerId, we skip the chat SSE and use Gemini
+  # directly. Override with $USE_BHARATGPT_CHAT.
+  enabled: true
+  # Per-attempt timeout for the SSE request in seconds.
+  attempt_timeout_seconds: 30
+  # Default language & timezone sent to chat API when persona has none.
+  default_language: en
+  default_timezone: Asia/Calcutta
+  # Match Studio web: llmResponse=true. False runs Knowledge Mesh + guardrail
+  # on every telephony turn (~5–8s extra before TTS can start).
+  llm_response: true
+  # Message is already transcribed text. Keep channel=telephony for analytics.
+  input_type: text
+  channel: telephony
+
+livekit:
+  # Read from $LIVEKIT_URL / $LIVEKIT_API_KEY / $LIVEKIT_API_SECRET.
+  # Nothing here — kept as env-only so credentials never live in a file.
+
+stt:
+  provider: deepgram
+  model: nova-3
+  # Deepgram accepts "multi" for multi-language personas. "en" is remapped to
+  # "en-IN" for Indian-English STT quality.
+  language_defaults:
+    en: en-IN
+    # Nova-3 on PSTN: language=hi often never emits a final for short Hindi
+    # ("haan", "nahi"), so VAD hears speech but the turn never commits — caller
+    # has to speak 2–3 times. `multi` is Deepgram's nova-3 code-switch path
+    # (Hindi + Hinglish + English).
+    hi: multi
+    hi-in: multi
+  # Always 16 kHz into Deepgram. SIP is 8 kHz on the wire, but LiveKit already
+  # upsamples the track — forcing 8 kHz here downsamples again and garbles
+  # Indian English (e.g. "what all services" → "Total service vehicle item").
+  sample_rate_hz:
+    telephony: 16000
+    non_telephony: 16000
+  num_channels: 1
+  detect_language: false
+  # End-of-turn is owned by LiveKit TurnDetector, not Deepgram silence.
+  # endpointing_ms=25 is Deepgram's streaming default — fast finals.
+  # no_delay=true: do not sit on extra audio before emitting the transcript.
+  # Generic keyterms ("call", "service") bias Nova-3 toward the wrong words;
+  # leave the list empty unless you have domain-specific names.
+  # endpointing_ms=25 chopped words mid-utterance on quiet PSTN → wrong finals
+  # ("yaar" heard as random text). 100ms lets Deepgram see the full word;
+  # TurnDetector still owns end-of-turn so response latency is unchanged.
+  endpointing_ms: 100
+  utterance_end_ms: 800
+  interim_results: true
+  smart_format: true
+  punctuate: true
+  filler_words: true
+  no_delay: true
+  numerals: true
+  keyterms: []
+
+llm:
+  # LiveKit Inference model ids. BharatGPT is served via Google Gemini here.
+  default_google_model: google/gemini-2.5-flash-lite
+  default_openai_model: openai/gpt-4o-mini
+  default_temperature: 0.8
+  temperature_bounds: [0.0, 2.0]
+  # Models the backend advertises but Inference does not (yet) support — remap.
+  broken_model_remap:
+    google/gemini-3.1-flash-preview: google/gemini-3.1-pro-preview
+    google/gemini-3.1-flash-live-preview: google/gemini-3.1-pro-preview
+    google/bharatgpt-mini: google/gemini-2.5-flash-lite
+
+tts:
+  # ElevenLabs defaults.
+  elevenlabs:
+    # This plugin maps pcm_* to audio/pcm (not MP3). 24 kHz matches
+    # telephony_output_sample_rate_hz so we don't resample 44.1k → 24k.
+    model: eleven_multilingual_v2
+    encoding: pcm_24000
+    streaming_latency: 3
+    voice_settings:
+      stability: 0.45
+      similarity_boost: 0.75
+      style: 0.25
+      use_speaker_boost: true
+      # Speaking-rate multiplier. 1.0 = default, 1.15 = ~15% faster (natural
+      # on Indian-English v2 voices). Push past 1.2 and it starts to
+      # sound rushed / robotic.
+      speed: 1.05
+    supported_languages:
+      - en
+      - ja
+      - zh
+      - de
+      - hi
+      - fr
+      - ko
+      - pt
+      - it
+      - es
+      - id
+      - nl
+      - tr
+      - fil
+      - pl
+      - sv
+      - bg
+      - ro
+      - ar
+      - cs
+      - el
+      - fi
+      - hr
+      - ms
+      - sk
+      - da
+      - ta
+      - uk
+      - ru
+    # Default voice IDs used when no persona voice is set / valid.
+    voices:
+      indian_female: 1qEiC6qsybMkmnNdVMbK
+      indian_male: LQ2auZHpAQ9h4azztqMT
+      us_female: 21m00Tcm4TlvDq8ikWAM
+      us_male: pNInz6obpgDQGcFmaJgB
+  google:
+    # Google Cloud TTS with Chirp3 HD voices + use_streaming=True for real-time
+    # audio delivery. Voice names must be in Chirp3 HD format:
+    # "<locale>-Chirp3-HD-<VoiceName>" e.g. "en-IN-Chirp3-HD-Kore"
+    # The livekit plugin auto-detects chirp_3 model from the voice name.
+    # Requires credentials_info from the bundled service account JSON.
+    model: chirp_3
+    default_voice: Kore
+    use_vertexai: false
+    # Streaming Chirp3 hits a LiveKit plugin bug on cancel/preempt:
+    #   RuntimeError: aclose(): asynchronous generator is already running
+    # Non-streaming synthesize_speech is used instead. Chirp3 unary API does
+    # not accept PCM — factory forces LINEAR16 in that mode.
+    use_streaming: false
+    location: global
+    # Speaking-rate multiplier. 1.0 = default, 1.15 = ~15% faster (natural
+    # on Chirp3 HD). Google range 0.25–4.0. Chirp3 tolerates 1.2 well;
+    # anything past 1.3 sounds unnaturally fast on Indian-English voices.
+    speaking_rate: 1.15
+  openai:
+    # (voice id comes from the persona; no default here — we surface a warning
+    # instead of silently substituting)
+    model: null
+
+session:
+  # Voice pipeline behavior.
+  allow_interruptions: true
+  interruption_mode: adaptive
+  discard_audio_if_uninterruptible: true
+  min_interruption_duration_ms: 500
+  min_interruption_words: 0
+  # LiveKit audio TurnDetector defaults (0.3–2.5s). Dynamic mode adapts to
+  # the caller's pause pattern instead of a fixed extra wait after every turn.
+  min_endpointing_delay_ms: 300
+  max_endpointing_delay_ms: 2500
+  # Telephony output — phone endpoints resample down, 24kHz mono is the sweet spot.
+  telephony_output_sample_rate_hz: 24000
+  telephony_output_num_channels: 1
+  # session.start() must complete inside this window or we abort the job.
+  start_timeout_ms: 20000
+  # RoomIO readiness wait (async init inside AgentSession).
+  room_io_ready_timeout_ms: 15000
+  # Outbound SIP: how long we wait for the callee to actually answer.
+  sip_answer_timeout_ms: 60000
+  sip_answer_poll_interval_ms: 200
+
+  # Idle-caller detection — if the caller picks up but doesn't speak.
+  # After `idle_prompt_first_ms` of silence, agent plays the 1st nudge prompt.
+  # After every `idle_prompt_interval_ms` more silence, next prompt (different
+  # text). At `idle_hangup_ms` total silence, agent says goodbye and ends call.
+  # Silence is measured from the last USER speech; the counter freezes while
+  # the agent is currently speaking. Any user speech resets everything.
+  idle_prompt_first_ms: 18000
+  idle_prompt_interval_ms: 18000
+  idle_hangup_ms: 60000
+  idle_prompts:
+    - "Hello, are you still there?"
+    - "Just checking — can you hear me?"
+    - "I'll end the call in a few seconds if I don't hear anything."
+  idle_goodbye: "I haven't heard from you, so I'll end the call. Goodbye."
+
+  # User-initiated hangup — if the caller says "bye" / "hang up" / "end the
+  # call" (see telephony/hangup.py `is_goodbye_intent`), agent plays this
+  # farewell then disconnects the SIP leg.
+  user_goodbye_farewell: "Thank you for calling. Goodbye!"
+
+vad:
+  # Silero VAD — loaded once per worker process via prewarm.
+  # TurnDetector requires min_silence_duration >= 0.25s.
+  # activation_threshold=0.35: Silero default 0.5 misses quiet earphone /
+  #   Bluetooth HFP mics (8 kHz, low level). 0.15 treated line hiss as speech.
+  # prefix_padding=0.5: do not clip the first syllable on a quiet start.
+  # PSTN audio (8kHz upsampled to 16kHz) has weaker spectral energy than the
+  # mic audio Silero was trained on, so normal-volume callers fell below 0.25.
+  # activation=0.18 catches soft-spoken callers; deactivation=0.10 keeps
+  # hysteresis but with a lower floor so mid-utterance dips don't cut speech.
+  # min_speech_duration=0.03 (30ms) catches short words like "haan"/"ok"/"yaar".
+  # Line hiss is now handled by Krisp NC upstream (noise_cancellation.mode=nc),
+  # so a lower VAD threshold is safe on real Linux prod. On macOS Krisp is
+  # skipped — expect a few false triggers there, that's a local-dev tradeoff.
+  min_speech_duration: 0.03
+  min_silence_duration: 1.2
+  activation_threshold: 0.18
+  deactivation_threshold: 0.10
+  prefix_padding_duration: 0.5
+  sample_rate: 16000
+
+noise_cancellation:
+  # Krisp NC() on macOS native builds aborts the job (Nc::~Nc SIGABRT).
+  # The worker skips NC automatically on Darwin. Linux workers can use mode: nc.
+  # bvc_telephony = voice isolation (can mute earphone mics).
+  # off = no Krisp (safest pickup for quiet headsets).
+  # $DISABLE_TELEPHONY_NC=true also skips the filter.
+  # mode selection on PSTN/telephony:
+  #   "nc"           = Krisp studio NC. CRASHES in production on telephony —
+  #                    "DfProcessor::readAndInitParams(): Input and output
+  #                    sample rates must be equal" → SIGABRT (exit -6).
+  #                    NC() is designed for 48kHz wideband, not PSTN.
+  #   "bvc_telephony"= Krisp BVC tuned for phone audio. This is the ONLY
+  #                    Krisp mode LiveKit designed for SIP calls. It can be
+  #                    slightly aggressive on very quiet earphone mics, but
+  #                    the alternative is either a crash ("nc") or no
+  #                    filtering at all ("off").
+  #   "off"          = no Krisp filter — raw PSTN hiss competes with speech.
+  # bvc_telephony is the right default for prod. If you find it clipping a
+  # specific caller, set DISABLE_TELEPHONY_NC=true in the env for that
+  # deployment.
+  telephony_enabled: true
+  mode: "bvc_telephony"
+
+ambience:
+  enabled: false
+  # One of the built-in clips: crowded_room, office_ambience, city_ambience,
+  # forest_ambience, hold_music, keyboard_typing, keyboard_typing2.
+  sound: crowded_room
+  # 0.0-1.0 — keep low so the agent's voice stays clearly intelligible.
+  volume: 0.12
+
+teardown:
+  # After the framework closes the AgentSession we force-exit the job
+  # subprocess so a stuck native teardown can't wedge the worker.
+  exit_delay_ms: 400
+
+logging:
+  # Compact conversation log format toggle. Verbose = show interim transcripts.
+  verbose: false
+  # Max chars per log line before truncation.
+  truncate_chars: 240
+
+prompts:
+  # Path (relative to repo root) of the persona-agnostic system context we
+  # append to every persona prompt as *background knowledge only* (never as
+  # identity).
+  background_context_file: config/system_prompts/corover.md
+  # Appended to every system prompt so LLMs know they're on a phone call.
+  voice_output_rules: |
+
+    Voice output rules:
+    - This is a spoken phone conversation. Reply in plain, natural, conversational sentences.
+    - Do NOT use emojis, markdown, bullet points, asterisks, or special symbols — they sound wrong when read aloud.
+    - Keep replies short and to the point.
+  # Language rules block. `{languages}` and `{primary}` are formatted in.
+  language_rules_template: |
+
+    Language rules:
+    - The user may speak in any of these supported languages: {languages}.
+    - Always answer in the same language as the user's latest message when possible.
+    - If language detection is uncertain, fall back to {primary}. Do not force English unless English is the user's language.
+  # Extra instructions appended for OUTBOUND calls (we placed the call).
+  outbound_call_opening: |
+
+    Call opening:
+    - This is an outbound phone call that YOU placed.
+    - You will greet the callee first with the configured welcome message, then continue naturally if they respond.
+
+cost_tracking:
+  # How raw usage numbers are attributed to billable providers. Adjust here if
+  # STT/LLM providers ever change without touching pipeline code.
+  stt_provider_key: deepgram_nova3
+  llm_provider_key_by_model_substring:
+    gpt: gpt_4o_mini
+    default: gemini_flash_lite
+  tts_provider_key_by_label_prefix:
+    elevenlabs: elevenlabs
+    google.gemini: google_tts
+    openai: openai_tts
+
+# Gemini prebuilt voices and locale/gender heuristics used by
+# src/worker/voice/map.py. This is *data*, so it lives here.
+gemini_voices:
+  all:
+    - Zephyr
+    - Puck
+    - Charon
+    - Kore
+    - Fenrir
+    - Leda
+    - Orus
+    - Aoede
+    - Callirrhoe
+    - Autonoe
+    - Enceladus
+    - Iapetus
+    - Umbriel
+    - Algieba
+    - Despina
+    - Erinome
+    - Algenib
+    - Rasalgethi
+    - Laomedeia
+    - Achernar
+    - Alnilam
+    - Schedar
+    - Gacrux
+    - Pulcherrima
+    - Achird
+    - Zubenelgenubi
+    - Vindemiatrix
+    - Sadachbia
+    - Sadaltager
+    - Sulafat
+  masculine:
+    - Puck
+    - Charon
+    - Enceladus
+    - Iapetus
+    - Umbriel
+    - Algieba
+    - Algenib
+    - Rasalgethi
+    - Alnilam
+    - Schedar
+    - Pulcherrima
+    - Achird
+    - Zubenelgenubi
+    - Sadachbia
+    - Sadaltager
+    - Fenrir
+    - Orus
+  locale_map:
+    en:      { female: Kore,    male: Orus,    default: Kore }
+    en-in:   { female: Kore,    male: Orus,    default: Kore }
+    en-us:   { female: Kore,    male: Orus,    default: Kore }
+    en-gb:   { female: Aoede,   male: Charon,  default: Kore }
+    hi:      { female: Aoede,   male: Fenrir,  default: Kore }
+    hi-in:   { female: Aoede,   male: Fenrir,  default: Kore }
+    gu:      { female: Leda,    male: Puck,    default: Kore }
+    gu-in:   { female: Leda,    male: Puck,    default: Kore }
+    kn:      { female: Kore,    male: Orus,    default: Kore }
+    kn-in:   { female: Kore,    male: Orus,    default: Kore }
+    te:      { female: Zephyr,  male: Charon,  default: Kore }
+    te-in:   { female: Zephyr,  male: Charon,  default: Kore }
+    ta:      { female: Leda,    male: Charon,  default: Kore }
+    ta-in:   { female: Leda,    male: Charon,  default: Kore }
+    ml:      { female: Aoede,   male: Orus,    default: Kore }
+    ml-in:   { female: Aoede,   male: Orus,    default: Kore }
+    mr:      { female: Kore,    male: Orus,    default: Kore }
+    mr-in:   { female: Kore,    male: Orus,    default: Kore }
+    bn:      { female: Aoede,   male: Fenrir,  default: Kore }
+    bn-in:   { female: Aoede,   male: Fenrir,  default: Kore }
+    ar:      { female: Sulafat, male: Algenib, default: Kore }
+    ar-xa:   { female: Sulafat, male: Algenib, default: Kore }
+
+# Languages considered "Indian" for greeting-voice-accent selection.
+indian_language_codes:
+  - hi
+  - te
+  - ta
+  - mr
+  - bn
+  - gu
+  - kn
+  - ml

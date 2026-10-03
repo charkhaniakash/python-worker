@@ -1,0 +1,713 @@
+[BOOT] Registering worker as agent_name="sip-agent-gupshup-test" on wss://builder-studio-k64uizqp.livekit.cloud — your backend dispatch MUST target this exact name, or no jobs will arrive.
+dev mode is deprecated and will be removed in a future release; use `lk agent dev` instead (https://docs.livekit.io/reference/developer-tools/livekit-cli/#setup)
+in-process auto-reload has been removed from the Python CLI; use `lk agent dev` for hot-reload
+2026-10-01 20:30:01,744 - [36mDEBUG[0m asyncio - Using selector: KqueueSelector [90m[0m
+2026-10-01 20:30:01,744 - [32mINFO[0m livekit.agents - starting worker [90m{"version": "1.6.9", "rtc-version": "1.1.14"}[0m
+2026-10-01 20:30:01,744 - [32mINFO[0m livekit.agents - plugin registered [90m{"plugin": "livekit.plugins.silero", "version": "1.6.9"}[0m
+2026-10-01 20:30:01,744 - [32mINFO[0m livekit.agents - plugin registered [90m{"plugin": "livekit.plugins.google", "version": "1.6.9"}[0m
+2026-10-01 20:30:01,744 - [32mINFO[0m livekit.agents - plugin registered [90m{"plugin": "livekit.plugins.elevenlabs", "version": "1.6.9"}[0m
+2026-10-01 20:30:01,744 - [32mINFO[0m livekit.agents - plugin registered [90m{"plugin": "livekit.plugins.openai", "version": "1.6.9"}[0m
+2026-10-01 20:30:01,744 - [32mINFO[0m livekit.agents - plugin registered [90m{"plugin": "livekit.plugins.deepgram", "version": "1.6.9"}[0m
+2026-10-01 20:30:01,746 - [32mINFO[0m livekit.agents - HTTP server listening on :63368 [90m[0m
+2026-10-01 20:30:02,064 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_3dCkXJX8WV5E", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-01 20:37:14,582 - [32mINFO[0m livekit.agents - received job request [90m{"job_id": "AJ_eEnNmcYYYqgY", "dispatch_id": "AD_eZ4pXBNNTvfd", "room": "call-out-poc_1790867232750_bf84e226", "room_id": "RM_iQtPBqVh9zyw", "agent_name": "sip-agent-gupshup-test", "resuming": false, "enable_recording": true}[0m
+2026-10-01 20:37:14,628 - [36mDEBUG[0m livekit.agents - received assignment [90m{"agent_name": "sip-agent-gupshup-test", "room_id": "RM_iQtPBqVh9zyw", "room": "call-out-poc_1790867232750_bf84e226", "job_id": "AJ_eEnNmcYYYqgY", "dispatch_id": "AD_eZ4pXBNNTvfd", "enable_recording": true}[0m
+2026-10-01 20:37:14,628 - [33mWARNING[0m livekit.agents - no warmed process available for job, waiting for one to be created [90m{"job_id": "AJ_eEnNmcYYYqgY"}[0m
+2026-10-01 20:37:14,641 - [32mINFO[0m livekit.agents - initializing process [90m{"pid": 45935}[0m
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001ed9ea180 (most recent call first):
+
+Current thread 0x00000001ed9ea180 (most recent call first):
+  <no Python frame>
+  <no Python frame>
+2026-10-01 20:37:14,669 - [31mERROR[0m livekit.agents - error initializing process [90m{"pid": 45935}[0m
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/utils/aio/duplex_unix.py", line 35, in recv_bytes
+    len_bytes = await self._reader.readexactly(4)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/.local/share/uv/python/cpython-3.13.14-macos-aarch64-none/lib/python3.13/asyncio/streams.py", line 767, in readexactly
+    raise exceptions.IncompleteReadError(incomplete, n)
+asyncio.exceptions.IncompleteReadError: 0 bytes read on a total of 4 expected bytes
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/proc_pool.py", line 249, in _proc_spawn_task
+    await proc.initialize()
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/supervised_proc.py", line 278, in initialize
+    init_res = await asyncio.wait_for(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "/Users/akash/.local/share/uv/python/cpython-3.13.14-macos-aarch64-none/lib/python3.13/asyncio/tasks.py", line 507, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/channel.py", line 47, in arecv_message
+    return _read_message(await dplx.recv_bytes(), messages)
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/utils/aio/duplex_unix.py", line 43, in recv_bytes
+    raise DuplexClosed() from e
+livekit.agents.utils.aio.duplex_unix.DuplexClosed
+2026-10-01 20:37:14,674 - [31mERROR[0m livekit.agents - process exited with non-zero exit code 1 [90m{"pid": 45935}[0m
+2026-10-01 20:37:14,674 - [33mWARNING[0m livekit.agents - all in-flight spawns failed to initialize, retrying [90m{"job_id": "AJ_eEnNmcYYYqgY", "attempt": 1}[0m
+2026-10-01 20:37:14,675 - [33mWARNING[0m livekit.agents - no warmed process available for job, waiting for one to be created [90m{"job_id": "AJ_eEnNmcYYYqgY"}[0m
+/Users/akash/.local/share/uv/python/cpython-3.13.14-macos-aarch64-none/lib/python3.13/multiprocessing/resource_tracker.py:237: UserWarning: resource_tracker: process died unexpectedly, relaunching.  Some resources might leak.
+  warnings.warn('resource_tracker: process died unexpectedly, '
+2026-10-01 20:37:14,683 - [32mINFO[0m livekit.agents - initializing process [90m{"pid": 45937}[0m
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001ed9ea180 (most recent call first):
+  <no Python frame>
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001ed9ea180 (most recent call first):
+  <no Python frame>
+2026-10-01 20:37:14,699 - [31mERROR[0m livekit.agents - error initializing process [90m{"pid": 45937}[0m
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/utils/aio/duplex_unix.py", line 35, in recv_bytes
+    len_bytes = await self._reader.readexactly(4)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/.local/share/uv/python/cpython-3.13.14-macos-aarch64-none/lib/python3.13/asyncio/streams.py", line 767, in readexactly
+    raise exceptions.IncompleteReadError(incomplete, n)
+asyncio.exceptions.IncompleteReadError: 0 bytes read on a total of 4 expected bytes
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/proc_pool.py", line 249, in _proc_spawn_task
+    await proc.initialize()
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/supervised_proc.py", line 278, in initialize
+    init_res = await asyncio.wait_for(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "/Users/akash/.local/share/uv/python/cpython-3.13.14-macos-aarch64-none/lib/python3.13/asyncio/tasks.py", line 507, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/channel.py", line 47, in arecv_message
+    return _read_message(await dplx.recv_bytes(), messages)
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/utils/aio/duplex_unix.py", line 43, in recv_bytes
+    raise DuplexClosed() from e
+livekit.agents.utils.aio.duplex_unix.DuplexClosed
+2026-10-01 20:37:14,700 - [31mERROR[0m livekit.agents - process exited with non-zero exit code 1 [90m{"pid": 45937}[0m
+2026-10-01 20:37:14,700 - [33mWARNING[0m livekit.agents - all in-flight spawns failed to initialize, retrying [90m{"job_id": "AJ_eEnNmcYYYqgY", "attempt": 2}[0m
+2026-10-01 20:37:14,701 - [33mWARNING[0m livekit.agents - no warmed process available for job, waiting for one to be created [90m{"job_id": "AJ_eEnNmcYYYqgY"}[0m
+2026-10-01 20:37:14,707 - [32mINFO[0m livekit.agents - initializing process [90m{"pid": 45939}[0m
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001ed9ea180 (most recent call first):
+  <no Python frame>
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001ed9ea180 (most recent call first):
+  <no Python frame>
+2026-10-01 20:37:14,721 - [31mERROR[0m livekit.agents - error initializing process [90m{"pid": 45939}[0m
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/utils/aio/duplex_unix.py", line 35, in recv_bytes
+    len_bytes = await self._reader.readexactly(4)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/.local/share/uv/python/cpython-3.13.14-macos-aarch64-none/lib/python3.13/asyncio/streams.py", line 767, in readexactly
+    raise exceptions.IncompleteReadError(incomplete, n)
+asyncio.exceptions.IncompleteReadError: 0 bytes read on a total of 4 expected bytes
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/proc_pool.py", line 249, in _proc_spawn_task
+    await proc.initialize()
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/supervised_proc.py", line 278, in initialize
+    init_res = await asyncio.wait_for(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "/Users/akash/.local/share/uv/python/cpython-3.13.14-macos-aarch64-none/lib/python3.13/asyncio/tasks.py", line 507, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/channel.py", line 47, in arecv_message
+    return _read_message(await dplx.recv_bytes(), messages)
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/utils/aio/duplex_unix.py", line 43, in recv_bytes
+    raise DuplexClosed() from e
+livekit.agents.utils.aio.duplex_unix.DuplexClosed
+2026-10-01 20:37:14,722 - [31mERROR[0m livekit.agents - process exited with non-zero exit code 1 [90m{"pid": 45939}[0m
+2026-10-01 20:37:14,723 - [33mWARNING[0m livekit.agents - all in-flight spawns failed to initialize, retrying [90m{"job_id": "AJ_eEnNmcYYYqgY", "attempt": 3}[0m
+2026-10-01 20:37:14,723 - [31mERROR[0m livekit.agents - failed to acquire process for job after 3 attempts [90m{"job_id": "AJ_eEnNmcYYYqgY"}[0m
+2026-10-01 20:37:14,723 - [31mERROR[0m livekit.agents - job_request_fnc failed [90m{"job_request": "<livekit.agents.job.JobRequest object at 0x1181eb230>", "agent_name": "sip-agent-gupshup-test"}[0m
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/worker.py", line 1438, in _job_request_task
+    await self._request_fnc(job_req)
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/worker.py", line 72, in _default_request_fnc
+    await ctx.accept()
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/job.py", line 953, in accept
+    await self._on_accept(accept_arguments)
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/worker.py", line 1417, in _on_accept
+    await self._proc_pool.launch_job(running_info)
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/proc_pool.py", line 170, in launch_job
+    proc = await self._acquire_proc(info.job.id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/proc_pool.py", line 162, in _acquire_proc
+    raise RuntimeError(f"no process became available after {MAX_ACQUIRE_ATTEMPTS} attempts")
+RuntimeError: no process became available after 3 attempts
+2026-10-01 20:37:41,410 - [32mINFO[0m livekit.agents - received job request [90m{"job_id": "AJ_MyYPefY4nZEM", "dispatch_id": "AD_Am6CVHCHF5E2", "room": "call-out-poc_1790867259725_965cc4ce", "room_id": "RM_jXYswbnCtxLE", "agent_name": "sip-agent-gupshup-test", "resuming": false, "enable_recording": true}[0m
+2026-10-01 20:37:41,457 - [36mDEBUG[0m livekit.agents - received assignment [90m{"agent_name": "sip-agent-gupshup-test", "room_id": "RM_jXYswbnCtxLE", "room": "call-out-poc_1790867259725_965cc4ce", "job_id": "AJ_MyYPefY4nZEM", "dispatch_id": "AD_Am6CVHCHF5E2", "enable_recording": true}[0m
+2026-10-01 20:37:41,458 - [33mWARNING[0m livekit.agents - no warmed process available for job, waiting for one to be created [90m{"job_id": "AJ_MyYPefY4nZEM"}[0m
+2026-10-01 20:37:41,479 - [32mINFO[0m livekit.agents - initializing process [90m{"pid": 46607}[0m
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001ed9ea180 (most recent call first):
+  <no Python frame>
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001ed9ea180 (most recent call first):
+  <no Python frame>
+2026-10-01 20:37:41,505 - [31mERROR[0m livekit.agents - error initializing process [90m{"pid": 46607}[0m
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/utils/aio/duplex_unix.py", line 35, in recv_bytes
+    len_bytes = await self._reader.readexactly(4)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/.local/share/uv/python/cpython-3.13.14-macos-aarch64-none/lib/python3.13/asyncio/streams.py", line 767, in readexactly
+    raise exceptions.IncompleteReadError(incomplete, n)
+asyncio.exceptions.IncompleteReadError: 0 bytes read on a total of 4 expected bytes
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/proc_pool.py", line 249, in _proc_spawn_task
+    await proc.initialize()
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/supervised_proc.py", line 278, in initialize
+    init_res = await asyncio.wait_for(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "/Users/akash/.local/share/uv/python/cpython-3.13.14-macos-aarch64-none/lib/python3.13/asyncio/tasks.py", line 507, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/channel.py", line 47, in arecv_message
+    return _read_message(await dplx.recv_bytes(), messages)
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/utils/aio/duplex_unix.py", line 43, in recv_bytes
+    raise DuplexClosed() from e
+livekit.agents.utils.aio.duplex_unix.DuplexClosed
+2026-10-01 20:37:41,507 - [31mERROR[0m livekit.agents - process exited with non-zero exit code 1 [90m{"pid": 46607}[0m
+2026-10-01 20:37:41,507 - [33mWARNING[0m livekit.agents - all in-flight spawns failed to initialize, retrying [90m{"job_id": "AJ_MyYPefY4nZEM", "attempt": 1}[0m
+2026-10-01 20:37:41,507 - [33mWARNING[0m livekit.agents - no warmed process available for job, waiting for one to be created [90m{"job_id": "AJ_MyYPefY4nZEM"}[0m
+2026-10-01 20:37:41,515 - [32mINFO[0m livekit.agents - initializing process [90m{"pid": 46609}[0m
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001ed9ea180 (most recent call first):
+  <no Python frame>
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001ed9ea180 (most recent call first):
+  <no Python frame>
+2026-10-01 20:37:41,531 - [31mERROR[0m livekit.agents - error initializing process [90m{"pid": 46609}[0m
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/utils/aio/duplex_unix.py", line 35, in recv_bytes
+    len_bytes = await self._reader.readexactly(4)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/.local/share/uv/python/cpython-3.13.14-macos-aarch64-none/lib/python3.13/asyncio/streams.py", line 767, in readexactly
+    raise exceptions.IncompleteReadError(incomplete, n)
+asyncio.exceptions.IncompleteReadError: 0 bytes read on a total of 4 expected bytes
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/proc_pool.py", line 249, in _proc_spawn_task
+    await proc.initialize()
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/supervised_proc.py", line 278, in initialize
+    init_res = await asyncio.wait_for(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "/Users/akash/.local/share/uv/python/cpython-3.13.14-macos-aarch64-none/lib/python3.13/asyncio/tasks.py", line 507, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/channel.py", line 47, in arecv_message
+    return _read_message(await dplx.recv_bytes(), messages)
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/utils/aio/duplex_unix.py", line 43, in recv_bytes
+    raise DuplexClosed() from e
+livekit.agents.utils.aio.duplex_unix.DuplexClosed
+2026-10-01 20:37:41,533 - [31mERROR[0m livekit.agents - process exited with non-zero exit code 1 [90m{"pid": 46609}[0m
+2026-10-01 20:37:41,533 - [33mWARNING[0m livekit.agents - all in-flight spawns failed to initialize, retrying [90m{"job_id": "AJ_MyYPefY4nZEM", "attempt": 2}[0m
+2026-10-01 20:37:41,533 - [33mWARNING[0m livekit.agents - no warmed process available for job, waiting for one to be created [90m{"job_id": "AJ_MyYPefY4nZEM"}[0m
+2026-10-01 20:37:41,540 - [32mINFO[0m livekit.agents - initializing process [90m{"pid": 46611}[0m
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001ed9ea180 (most recent call first):
+  <no Python frame>
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001ed9ea180 (most recent call first):
+  <no Python frame>
+2026-10-01 20:37:41,554 - [31mERROR[0m livekit.agents - error initializing process [90m{"pid": 46611}[0m
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/utils/aio/duplex_unix.py", line 35, in recv_bytes
+    len_bytes = await self._reader.readexactly(4)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/.local/share/uv/python/cpython-3.13.14-macos-aarch64-none/lib/python3.13/asyncio/streams.py", line 767, in readexactly
+    raise exceptions.IncompleteReadError(incomplete, n)
+asyncio.exceptions.IncompleteReadError: 0 bytes read on a total of 4 expected bytes
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/proc_pool.py", line 249, in _proc_spawn_task
+    await proc.initialize()
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/supervised_proc.py", line 278, in initialize
+    init_res = await asyncio.wait_for(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "/Users/akash/.local/share/uv/python/cpython-3.13.14-macos-aarch64-none/lib/python3.13/asyncio/tasks.py", line 507, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/channel.py", line 47, in arecv_message
+    return _read_message(await dplx.recv_bytes(), messages)
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/utils/aio/duplex_unix.py", line 43, in recv_bytes
+    raise DuplexClosed() from e
+livekit.agents.utils.aio.duplex_unix.DuplexClosed
+2026-10-01 20:37:41,555 - [31mERROR[0m livekit.agents - process exited with non-zero exit code 1 [90m{"pid": 46611}[0m
+2026-10-01 20:37:41,555 - [33mWARNING[0m livekit.agents - all in-flight spawns failed to initialize, retrying [90m{"job_id": "AJ_MyYPefY4nZEM", "attempt": 3}[0m
+2026-10-01 20:37:41,555 - [31mERROR[0m livekit.agents - failed to acquire process for job after 3 attempts [90m{"job_id": "AJ_MyYPefY4nZEM"}[0m
+2026-10-01 20:37:41,555 - [31mERROR[0m livekit.agents - job_request_fnc failed [90m{"job_request": "<livekit.agents.job.JobRequest object at 0x1181d9310>", "agent_name": "sip-agent-gupshup-test"}[0m
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/worker.py", line 1438, in _job_request_task
+    await self._request_fnc(job_req)
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/worker.py", line 72, in _default_request_fnc
+    await ctx.accept()
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/job.py", line 953, in accept
+    await self._on_accept(accept_arguments)
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/worker.py", line 1417, in _on_accept
+    await self._proc_pool.launch_job(running_info)
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/proc_pool.py", line 170, in launch_job
+    proc = await self._acquire_proc(info.job.id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/proc_pool.py", line 162, in _acquire_proc
+    raise RuntimeError(f"no process became available after {MAX_ACQUIRE_ATTEMPTS} attempts")
+RuntimeError: no process became available after 3 attempts
+2026-10-01 20:38:17,129 - [32mINFO[0m livekit.agents - received job request [90m{"job_id": "AJ_WLkAA2rSvnpN", "dispatch_id": "AD_7nopYVrFsYoL", "room": "call-out-poc_1790867295473_352c649b", "room_id": "RM_4WEk2fksxi2C", "agent_name": "sip-agent-gupshup-test", "resuming": false, "enable_recording": true}[0m
+2026-10-01 20:38:17,177 - [36mDEBUG[0m livekit.agents - received assignment [90m{"agent_name": "sip-agent-gupshup-test", "room_id": "RM_4WEk2fksxi2C", "room": "call-out-poc_1790867295473_352c649b", "job_id": "AJ_WLkAA2rSvnpN", "dispatch_id": "AD_7nopYVrFsYoL", "enable_recording": true}[0m
+2026-10-01 20:38:17,177 - [33mWARNING[0m livekit.agents - no warmed process available for job, waiting for one to be created [90m{"job_id": "AJ_WLkAA2rSvnpN"}[0m
+2026-10-01 20:38:17,193 - [32mINFO[0m livekit.agents - initializing process [90m{"pid": 48074}[0m
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001ed9ea180 (most recent call first):
+  <no Python frame>
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001ed9ea180 (most recent call first):
+  <no Python frame>
+2026-10-01 20:38:17,218 - [31mERROR[0m livekit.agents - error initializing process [90m{"pid": 48074}[0m
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/utils/aio/duplex_unix.py", line 35, in recv_bytes
+    len_bytes = await self._reader.readexactly(4)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/.local/share/uv/python/cpython-3.13.14-macos-aarch64-none/lib/python3.13/asyncio/streams.py", line 767, in readexactly
+    raise exceptions.IncompleteReadError(incomplete, n)
+asyncio.exceptions.IncompleteReadError: 0 bytes read on a total of 4 expected bytes
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/proc_pool.py", line 249, in _proc_spawn_task
+    await proc.initialize()
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/supervised_proc.py", line 278, in initialize
+    init_res = await asyncio.wait_for(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "/Users/akash/.local/share/uv/python/cpython-3.13.14-macos-aarch64-none/lib/python3.13/asyncio/tasks.py", line 507, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/channel.py", line 47, in arecv_message
+    return _read_message(await dplx.recv_bytes(), messages)
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/utils/aio/duplex_unix.py", line 43, in recv_bytes
+    raise DuplexClosed() from e
+livekit.agents.utils.aio.duplex_unix.DuplexClosed
+2026-10-01 20:38:17,220 - [31mERROR[0m livekit.agents - process exited with non-zero exit code 1 [90m{"pid": 48074}[0m
+2026-10-01 20:38:17,220 - [33mWARNING[0m livekit.agents - all in-flight spawns failed to initialize, retrying [90m{"job_id": "AJ_WLkAA2rSvnpN", "attempt": 1}[0m
+2026-10-01 20:38:17,220 - [33mWARNING[0m livekit.agents - no warmed process available for job, waiting for one to be created [90m{"job_id": "AJ_WLkAA2rSvnpN"}[0m
+2026-10-01 20:38:17,229 - [32mINFO[0m livekit.agents - initializing process [90m{"pid": 48076}[0m
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001ed9ea180 (most recent call first):
+  <no Python frame>
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001ed9ea180 (most recent call first):
+  <no Python frame>
+2026-10-01 20:38:17,248 - [31mERROR[0m livekit.agents - error initializing process [90m{"pid": 48076}[0m
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/utils/aio/duplex_unix.py", line 35, in recv_bytes
+    len_bytes = await self._reader.readexactly(4)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/.local/share/uv/python/cpython-3.13.14-macos-aarch64-none/lib/python3.13/asyncio/streams.py", line 767, in readexactly
+    raise exceptions.IncompleteReadError(incomplete, n)
+asyncio.exceptions.IncompleteReadError: 0 bytes read on a total of 4 expected bytes
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/proc_pool.py", line 249, in _proc_spawn_task
+    await proc.initialize()
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/supervised_proc.py", line 278, in initialize
+    init_res = await asyncio.wait_for(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "/Users/akash/.local/share/uv/python/cpython-3.13.14-macos-aarch64-none/lib/python3.13/asyncio/tasks.py", line 507, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/channel.py", line 47, in arecv_message
+    return _read_message(await dplx.recv_bytes(), messages)
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/utils/aio/duplex_unix.py", line 43, in recv_bytes
+    raise DuplexClosed() from e
+livekit.agents.utils.aio.duplex_unix.DuplexClosed
+2026-10-01 20:38:17,250 - [31mERROR[0m livekit.agents - process exited with non-zero exit code 1 [90m{"pid": 48076}[0m
+2026-10-01 20:38:17,250 - [33mWARNING[0m livekit.agents - all in-flight spawns failed to initialize, retrying [90m{"job_id": "AJ_WLkAA2rSvnpN", "attempt": 2}[0m
+2026-10-01 20:38:17,250 - [33mWARNING[0m livekit.agents - no warmed process available for job, waiting for one to be created [90m{"job_id": "AJ_WLkAA2rSvnpN"}[0m
+2026-10-01 20:38:17,257 - [32mINFO[0m livekit.agents - initializing process [90m{"pid": 48078}[0m
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+Fatal Python error: init_sys_streams: can't initialize sys standard streams
+Python runtime state: core initialized
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001ed9ea180 (most recent call first):
+  <no Python frame>
+OSError: [Errno 9] Bad file descriptor
+
+Current thread 0x00000001ed9ea180 (most recent call first):
+  <no Python frame>
+2026-10-01 20:38:17,271 - [31mERROR[0m livekit.agents - error initializing process [90m{"pid": 48078}[0m
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/utils/aio/duplex_unix.py", line 35, in recv_bytes
+    len_bytes = await self._reader.readexactly(4)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/.local/share/uv/python/cpython-3.13.14-macos-aarch64-none/lib/python3.13/asyncio/streams.py", line 767, in readexactly
+    raise exceptions.IncompleteReadError(incomplete, n)
+asyncio.exceptions.IncompleteReadError: 0 bytes read on a total of 4 expected bytes
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/proc_pool.py", line 249, in _proc_spawn_task
+    await proc.initialize()
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/supervised_proc.py", line 278, in initialize
+    init_res = await asyncio.wait_for(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "/Users/akash/.local/share/uv/python/cpython-3.13.14-macos-aarch64-none/lib/python3.13/asyncio/tasks.py", line 507, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/channel.py", line 47, in arecv_message
+    return _read_message(await dplx.recv_bytes(), messages)
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/utils/aio/duplex_unix.py", line 43, in recv_bytes
+    raise DuplexClosed() from e
+livekit.agents.utils.aio.duplex_unix.DuplexClosed
+2026-10-01 20:38:17,272 - [31mERROR[0m livekit.agents - process exited with non-zero exit code 1 [90m{"pid": 48078}[0m
+2026-10-01 20:38:17,272 - [33mWARNING[0m livekit.agents - all in-flight spawns failed to initialize, retrying [90m{"job_id": "AJ_WLkAA2rSvnpN", "attempt": 3}[0m
+2026-10-01 20:38:17,272 - [31mERROR[0m livekit.agents - failed to acquire process for job after 3 attempts [90m{"job_id": "AJ_WLkAA2rSvnpN"}[0m
+2026-10-01 20:38:17,272 - [31mERROR[0m livekit.agents - job_request_fnc failed [90m{"job_request": "<livekit.agents.job.JobRequest object at 0x1181db4d0>", "agent_name": "sip-agent-gupshup-test"}[0m
+Traceback (most recent call last):
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/worker.py", line 1438, in _job_request_task
+    await self._request_fnc(job_req)
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/worker.py", line 72, in _default_request_fnc
+    await ctx.accept()
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/job.py", line 953, in accept
+    await self._on_accept(accept_arguments)
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/worker.py", line 1417, in _on_accept
+    await self._proc_pool.launch_job(running_info)
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/proc_pool.py", line 170, in launch_job
+    proc = await self._acquire_proc(info.job.id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/akash/Desktop/builderv2_python_worker/.venv/lib/python3.13/site-packages/livekit/agents/ipc/proc_pool.py", line 162, in _acquire_proc
+    raise RuntimeError(f"no process became available after {MAX_ACQUIRE_ATTEMPTS} attempts")
+RuntimeError: no process became available after 3 attempts
+2026-10-01 21:02:53,186 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-01 21:02:53,192 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-01 21:02:53,374 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_Kt38vZqosnse", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-01 21:34:32,585 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-01 21:34:32,822 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_ZfpqMh8S4hRE", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-01 22:04:59,599 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-01 22:04:59,898 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_h4kuDKvzZp4b", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-01 22:22:58,405 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-01 22:22:58,406 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-01 22:22:58,606 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_oaTVRBJhzrgg", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-01 23:01:21,128 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-01 23:01:21,319 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_CwFYMbeQAQwE", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-01 23:21:07,122 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-01 23:21:07,123 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-01 23:21:07,274 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_eHewxKxqvYZr", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-01 23:38:06,365 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-01 23:38:06,622 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_W56L4u6edRxZ", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 00:04:36,155 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 00:04:36,700 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_7tSx4E63LhBp", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 00:25:31,654 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 00:25:31,839 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_tBwfyPuDD5RV", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 00:42:55,256 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 00:42:55,456 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_ZMcfoKMZKuxQ", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 01:05:25,233 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 01:05:25,403 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_ujwCna2fuo7p", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 01:24:39,798 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-02 01:24:39,799 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 01:24:39,963 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_XYbGUMYcDpD4", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 01:41:54,216 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 01:41:54,388 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_uTjMAAPJsdVU", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 02:04:53,772 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 02:04:53,939 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_skCerQUpGtu9", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 02:25:17,429 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 02:25:17,793 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_ARU3HwR2ZQVG", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 02:49:47,107 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-02 02:49:47,108 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 02:49:47,531 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_SLgJjx25QRxr", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 03:07:57,945 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 03:07:58,123 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_YHfestDqGXkZ", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 03:31:24,250 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 03:31:24,256 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 2s [90m{"retry_count": 2, "max_retry": 16, "error": "Cannot connect to host builder-studio-k64uizqp.livekit.cloud:443 ssl:default [nodename nor servname provided, or not known]"}[0m
+2026-10-02 03:32:56,240 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 4s [90m{"retry_count": 3, "max_retry": 16, "error": "Cannot connect to host builder-studio-k64uizqp.livekit.cloud:443 ssl:default [nodename nor servname provided, or not known]"}[0m
+2026-10-02 03:33:00,248 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 6s [90m{"retry_count": 4, "max_retry": 16, "error": "Cannot connect to host builder-studio-k64uizqp.livekit.cloud:443 ssl:default [nodename nor servname provided, or not known]"}[0m
+2026-10-02 03:48:10,734 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_WNxrL8CF7hTG", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 04:05:06,855 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 04:05:07,017 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_xrPJSGA5j2FX", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 04:39:24,238 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 04:39:24,438 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_CgKyZBkaWwvm", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 04:42:15,741 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-02 04:42:15,742 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 04:42:15,902 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_DFSLcQF7F5hH", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 05:00:08,075 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-02 05:00:08,076 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 05:00:08,239 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_cPi4ZWt92XzE", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 05:32:54,407 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 05:32:54,570 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_mwgtQotbh6Mx", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 05:50:43,750 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 05:50:44,358 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_8BX8T6k5nU3H", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 06:26:11,828 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 07:00:03,981 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "Received message 258:ServerTimeoutError('No PONG received after 15.0 seconds') is not WSMsgType.BINARY"}[0m
+2026-10-02 07:00:04,170 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_C6ZvS3i8KrTu", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 07:17:51,185 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 07:17:51,396 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_MU6ZDE8oBNo2", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 07:35:21,598 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 07:35:21,869 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_EhCytBfxto6W", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 07:53:37,967 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-02 07:53:37,968 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 08:09:32,595 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_MkM6MkCyHKHM", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 08:42:05,150 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-02 08:42:05,151 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 08:42:05,312 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_Mbt3YnwuMTyZ", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 08:59:19,298 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 08:59:19,872 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_naQBYpyZ2REA", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 09:18:48,954 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 09:18:49,120 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_a8T48h6ggpGB", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 09:37:01,320 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 09:37:01,521 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_3H3iZX9FGHmQ", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 10:00:25,079 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 10:00:25,557 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_mpHHbQP5kZa9", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 10:18:16,630 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-02 10:18:16,631 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 10:18:16,832 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_cuGRE6qifNAk", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 10:40:46,469 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 10:40:46,651 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_5wq6FBQByszv", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 11:00:30,867 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-02 11:00:30,868 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 11:00:31,021 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_h8z9ukeuDadG", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 11:18:51,718 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-02 11:18:51,719 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 11:18:51,871 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_iFsDiEfHDfoj", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 11:44:27,827 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 11:44:27,988 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_QpZiSYHkKJBZ", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 12:01:44,631 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 12:02:10,336 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_yGaBGuvcePgd", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 12:36:49,032 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 12:36:49,708 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_U8a4ojXBBDkt", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 13:01:00,117 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 13:01:00,445 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_9cjwjFt3YX4t", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 13:21:25,902 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 13:21:26,074 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_EvQ76KTKk9JV", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 13:40:15,367 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 13:40:15,541 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_MLyswpKHTN4T", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 14:04:18,037 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 14:04:18,204 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_gBznEVPWkvNJ", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 14:22:01,556 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 14:22:01,706 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_Qs3cLpUhPdSd", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 14:41:32,846 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 14:41:33,016 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_dwPKJpFxyZYC", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 15:04:08,138 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 15:04:08,317 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_tfa4ZA2chdx9", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 15:07:24,030 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-02 15:07:24,031 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 15:07:24,241 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_7S4sumRcngyn", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 15:41:39,046 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 15:41:39,564 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_EawYZuoLyAwD", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 16:04:03,992 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 16:04:04,187 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_UUVitPH8BK3X", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 16:24:18,982 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-02 16:24:18,984 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 16:24:19,178 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_znu4CSZxYNL3", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 16:41:41,769 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 16:41:41,940 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_uPqhdoUgukCs", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 17:06:56,302 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 17:06:56,470 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_xWnFU2K6UntV", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 17:26:32,180 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-02 17:26:32,181 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 17:26:32,372 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_N7m7UXTPsAcv", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 17:44:47,874 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-02 17:44:47,875 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 17:44:48,029 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_VCCAetYihfaP", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 18:07:22,195 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 18:07:22,360 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_mmQqoWmt4oUS", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 18:25:03,898 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 18:25:04,071 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_EsAniNTpVUwN", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 18:51:05,086 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 18:51:05,604 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_6kMhHeqYGjBu", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 19:07:45,263 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 19:08:16,564 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_aCpEGuTEvREy", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 19:27:20,370 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 19:27:20,524 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_GhgizvAfgKwf", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 19:39:34,394 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-02 19:39:34,395 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 19:39:34,649 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_FLzbVGGrn9jv", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 19:55:39,539 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 19:55:39,759 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_ujd4o23ACDkZ", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 22:48:48,037 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 22:48:48,242 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_ASH3owdMVP9Q", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 23:07:22,983 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-02 23:07:22,988 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 23:07:23,289 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_L9rVmyMvgSwr", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 23:40:19,620 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 23:40:19,786 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_tT8eqkuD6tvz", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-02 23:58:48,194 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-02 23:58:48,197 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-02 23:58:48,356 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_dm4fRcfjgXGP", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 00:33:22,580 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 00:33:22,740 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_k5GnsCVxwis3", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 01:06:13,801 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 01:06:13,977 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_GYmhGabQ4Q5S", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 01:19:49,174 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-03 01:19:49,176 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 01:19:49,859 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_q4h5TzsALjN5", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 01:37:44,689 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-03 01:37:44,692 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 01:37:45,265 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_cWXqpaFByhFn", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 02:12:00,203 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 02:12:00,374 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_pbffNiDiYi5S", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 02:35:04,195 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 02:35:04,362 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_BBRM7DZoBvTV", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 02:54:48,868 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-03 02:54:48,870 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 02:54:49,039 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_3tEo8FXc3Teh", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 03:35:54,342 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 03:35:54,533 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_zsam2Dp59Q8o", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 03:57:26,436 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 03:57:26,588 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_BVr3J7b6X6XH", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 04:14:43,421 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 04:15:14,561 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_r5FrAfCJoaFo", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 04:39:28,085 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 04:39:28,249 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_3Qp6QkRNXwjH", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 05:11:39,542 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 05:11:39,702 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_YeTRevQL8duw", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 05:38:48,312 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 05:38:48,723 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_kEXMeUrFJe3S", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 05:58:39,025 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-03 05:58:39,027 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 05:58:39,207 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_RG3wtWagKgWP", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 06:23:47,489 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-03 06:23:47,491 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 06:23:47,656 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_ag9rsV2eE5Yb", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 07:01:30,808 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 07:01:30,969 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_CyucvAfn2Nnm", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 07:23:49,423 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 07:23:49,581 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_7piWUczniFiE", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 07:57:26,568 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 07:57:26,727 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_xnyQh62fDyA5", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 08:16:43,219 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 08:16:43,379 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_EZjxoG3iand8", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 08:42:28,539 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 08:42:28,705 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_LJjgAu88UAAg", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 09:19:04,794 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 09:19:04,954 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_Fs4GwmM6Vjpc", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 09:40:57,496 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 09:40:57,674 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_XCvtZNHgAUAX", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 10:00:39,213 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 10:00:39,539 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_4eR9uafdYzPe", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 10:21:22,974 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-03 10:21:22,976 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 10:21:23,133 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_QhtgR6D4TVDx", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 10:44:40,914 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 10:44:41,602 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_STemaeE7uHpN", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 11:03:28,688 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-03 11:03:28,688 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 11:03:28,859 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_bHrVaiNyKAyk", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 11:23:39,854 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-03 11:23:39,855 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 11:23:40,030 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_hifoy6ysmZmh", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 11:43:57,338 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 11:43:57,526 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_PabwqZK2wEFd", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 12:02:33,431 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-03 12:02:33,433 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 12:18:34,390 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_xGhf4kStDqdm", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 13:00:44,828 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-03 13:00:44,830 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 13:00:45,049 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_S79vLHvBY3Dk", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 13:20:19,897 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-03 13:20:19,898 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 13:20:20,058 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_F7ZGTffLa6AZ", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 13:45:18,712 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 13:45:19,304 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_Jfd3YB2zfFuQ", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 14:06:31,238 - [33mWARNING[0m livekit.agents - unexpected message type: 258 [90m{"type": "ERROR", "ws_data": "No PONG received after 15.0 seconds"}[0m
+2026-10-03 14:06:31,240 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 14:06:31,428 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_PTvYeauxZhY7", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 14:24:13,927 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 14:24:14,121 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_BodpKxYVF93n", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m
+2026-10-03 14:47:49,140 - [33mWARNING[0m livekit.agents - failed to connect to livekit, retrying in 0s [90m{"retry_count": 1, "max_retry": 16, "error": "message='worker connection closed unexpectedly', status_code=1006, retryable=True, body=msg.data=None msg.extra=None"}[0m
+2026-10-03 14:47:49,476 - [32mINFO[0m livekit.agents - registered worker [90m{"agent_name": "sip-agent-gupshup-test", "deployment": "", "id": "AW_8H5JALsbFguu", "url": "wss://builder-studio-k64uizqp.livekit.cloud", "region": "India South", "protocol": 17}[0m

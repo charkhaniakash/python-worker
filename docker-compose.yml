@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  livekit-worker:
+    build: .
+    container_name: livekit-worker
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      # Non-secret runtime knobs (secrets stay in .env, mounted above).
+      - PYTHONUNBUFFERED=1
+      - WORKER_CONFIG_PATH=/app/config/defaults.yaml
+      # For non-GCP hosts: mount a SA key and set GOOGLE_APPLICATION_CREDENTIALS.
+      # On GKE/Cloud Run, Workload Identity provides credentials automatically.
+      # - GOOGLE_APPLICATION_CREDENTIALS=/secrets/gcp-sa-key.json
+    # volumes:
+    #   # Mount the SA key for non-GCP deployments (Secret Manager auth only —
+    #   # TTS credentials are always fetched from Secret Manager, not this file).
+    #   - ./secrets/gcp-sa-key.json:/secrets/gcp-sa-key.json:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: "0.5"
+        reservations:
+          memory: 512M
+          cpus: "0.25"
