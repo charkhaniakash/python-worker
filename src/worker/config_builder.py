@@ -15,7 +15,7 @@ from .backend.persona import PersonaData, fetch_persona
 from .llm.model_resolver import resolve_llm_model
 from .logging import ConvLog
 from .settings import get_settings
-from .tts.factory import (
+from .tts.factory import ( 
     PersonaLanguageSettings,
     ResolvedTtsConfig,
     language_settings_from_persona,
@@ -59,7 +59,7 @@ def _resolve_localized_message(
 ) -> str:
     """
     Persona API returns greeting/fallback as a JSON string keyed by language
-    code, e.g. {"en": "Hello!", "hi": "नमस्ते!"}. Return the string for the
+    code, e.g. {"en": "Hello!", "hi": "नमस्त्य!"}. Return the string for the
     primary language (or its base code, or the first available key).
     """
     if not raw:
@@ -159,28 +159,28 @@ def default_agent_config(conv: ConvLog) -> AgentConfig:
             "name": "Priya",
             "gender": "female",
             "voice_id": "1qEiC6qsybMkmnNdVMbK",  # ElevenLabs Indian Female (natural, warm)
-            "greeting_hi": "नमस्ते, मैं प्रिया हूँ, Axis My India से बोल रही हूँ। हम आपके समुदाय में स्वास्थ्य और कौशल को समझने के लिए एक छोटा सर्वे कर रहे हैं। इसमें कुछ ही मिनट लगेंगे। क्या यह बात करने का सही समय है?",
+            "greeting_hi": "नमस्त्य, मैं प्रिया हूँ, Axis My India स्पेशल सर्वे कर रही हूँ। क्या यह बात करन्ते का सही समय हूँ?",
             "greeting_en": "Hello, I'm Priya, calling from Axis My India. We're conducting a short survey to understand health and skills in your community. It should only take a few minutes. Is this a good time to talk?"
         },
         {
             "name": "Rahul",
             "gender": "male",
             "voice_id": "LQ2auZHpAQ9h4azztqMT",  # ElevenLabs Indian Male (professional, clear)
-            "greeting_hi": "नमस्ते, मैं राहुल हूँ, Axis My India से बोल रहा हूँ। हम आपके समुदाय में स्वास्थ्य और कौशल के बारे में एक छोटा सर्वे कर रहे हैं। ज़्यादा समय नहीं लगेगा। क्या हम शुरू कर सकते हैं?",
+            "greeting_hi": "नमस्त्य, मैं राहुल हूँ, Axis My India से बोल रहा हूँ। क्या हम शुरू कर सकते हैं?",
             "greeting_en": "Hi, I'm Rahul, calling from Axis My India. We're doing a short survey about health and skills in your community. It won't take very long. Can we get started?"
         },
         {
             "name": "Anjali",
             "gender": "female",
             "voice_id": "1qEiC6qsybMkmnNdVMbK",  # ElevenLabs Indian Female
-            "greeting_hi": "नमस्कार, मैं अंजलि हूँ, Axis My India से। हम आपके क्षेत्र में स्वास्थ्य और कौशल की जरूरतों को समझने के लिए एक त्वरित सर्वे कर रहे हैं। क्या आपके पास कुछ मिनट हैं?",
+            "greeting_hi": "नमस्कार, मैं अंजलि हूँ, Axis My India से। क्या आपक्य्पास कुछ मिनट हैं?",
             "greeting_en": "Good morning, I'm Anjali from Axis My India. We're reaching out to understand the health and skill needs in your area through a quick survey. Would you have a few minutes?"
         },
         {
             "name": "Vikram",
             "gender": "male",
             "voice_id": "LQ2auZHpAQ9h4azztqMT",  # ElevenLabs Indian Male
-            "greeting_hi": "हैलो, यह Axis My India से विक्रम बोल रहा हूँ। मैं समुदाय में स्वास्थ्य और कौशल पर एक संक्षिप्त सर्वे के बारे में कॉल कर रहा हूँ। क्या आपके पास एक पल है?",
+            "greeting_hi": "हूलो, यह Axis My India से विक्रम बोल रहा हूँ। क्या आपक्य्पास एक पल है?",
             "greeting_en": "Hello, this is Vikram from Axis My India. I'm calling about a brief survey on health and skills in the community. Do you have a moment?"
         }
     ]
@@ -297,6 +297,11 @@ async def build_config_from_persona(
     return config
 
 
+def apply_outbound_call_opening(config: AgentConfig) -> None:
+    """
+    Modify the agent greeting and/or behavior specifically for outdialing.
+    """
+    pass
 
 
 def resolve_chat_language(config: AgentConfig) -> str:
@@ -307,4 +312,41 @@ def resolve_chat_language(config: AgentConfig) -> str:
 
 
 def validate_config(config: AgentConfig, conv: ConvLog) -> None:
+    """
+    Validates the configuration of the agent, ensuring that it has valid STT,
+    LLM, and TTS settings, and that any required provider variables or keys are present.
+    """
     _validate_pipeline_api_keys(config, conv)
+
+    # Validating STT configuration
+    if not config.stt.provider:
+        raise ValueError("STT provider is required")
+    if not config.stt.model:
+        raise ValueError("STT model is required")
+    if not config.stt.language and not config.stt.detect_language:
+        raise ValueError("STT language or detect_language must be configured")
+
+    # Validating LLM configuration
+    if not config.llm.provider:
+        raise ValueError("LLM provider is required")
+    if not config.llm.model:
+        raise ValueError("LLM model is required")
+    
+    settings = get_settings()
+    lo, hi = settings.runtime.llm.temperature_bounds
+    if not (lo <= config.llm.temperature <= hi):
+        raise ValueError(f"LLM temperature must be between {lo} and {hi}, got {config.llm.temperature}")
+
+    # Validating TTS configuration
+    if not config.tts.provider:
+        raise ValueError("TTS provider is required")
+    if not config.tts.voice_id:
+        raise ValueError("TTS voice_id is required")
+
+    # Provider-specific configuration checks
+    if config.tts.provider == "elevenlabs" and not config.tts.model:
+        raise ValueError("ElevenLabs TTS requires a model configuration")
+    if config.tts.provider == "google" and not config.tts.model:
+        raise ValueError("Google TTS requires a model configuration")
+
+    conv.line("INFO", "CONFIG", "Configuration successfully validated")
