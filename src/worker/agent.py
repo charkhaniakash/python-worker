@@ -1,3 +1,4 @@
+ைகளைக்```python
 """LiveKit `Agent` — a minimal wrapper that seeds the initial system prompt."""
 
 from __future__ import annotations
@@ -16,10 +17,8 @@ class TelephonyAssistant(Agent):
     """
 
     def __init__(self, config: AgentConfig, *, use_chat_backend: bool) -> None:
-        instructions = (
-            "You are a voice interface. Keep replies short and conversational."
-            if use_chat_backend
-            else config.llm.system_prompt
-        )
+        instructions = config.llm.system_prompt
+        if use_chat_backend:
+            instructions = "You are a voice interface. Keep replies short and conversational. " + instructions
         super().__init__(instructions=instructions)
         print(f"Agent initialized: {config.agent_name}", flush=True)
