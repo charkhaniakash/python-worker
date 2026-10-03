@@ -1,5 +1,3 @@
-"""Persona API — fetch the persona definition for a given personaId."""
-
 from __future__ import annotations
 
 import asyncio
@@ -11,6 +9,11 @@ from pydantic import BaseModel, Field
 from ..logging import ConvLog
 from ..settings import get_settings
 from .client import get_backend_client
+
+
+# Concurrency limiter for persona fetches - hardcoded for now due to missing config context
+_PERSONA_FETCH_CONCURRENCY_LIMIT = 5
+_persona_fetch_semaphore = asyncio.Semaphore(_PERSONA_FETCH_CONCURRENCY_LIMIT)
 
 
 class PersonaData(BaseModel):
@@ -71,11 +74,12 @@ async def fetch_persona(
     for attempt in range(1, cfg.attempts + 1):
         started = time.monotonic()
         try:
-            resp = await client.get(
-                path,
-                headers=headers,
-                timeout_ms=cfg.per_attempt_timeout_ms,
-            )
+            async with _persona_fetch_semaphore:
+                resp = await client.get(
+                    path,
+                    headers=headers,
+                    timeout_ms=cfg.per_attempt_timeout_ms,
+                )
             latency_ms = int((time.monotonic() - started) * 1000)
             conv.line("INFO", "CONFIG", f"Persona fetch attempt {attempt} completed", {
                 "status": resp.status_code,
@@ -87,7 +91,7 @@ async def fetch_persona(
                 payload = resp.json()
                 break
             conv.line("WARN", "CONFIG", f"Persona fetch attempt {attempt} → {resp.status_code}")
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             conv.line("WARN", "CONFIG", f"Persona fetch attempt {attempt} failed: {e}", {
                 "latencyMs": int((time.monotonic() - started) * 1000),
             })
