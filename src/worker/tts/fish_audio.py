@@ -1,41 +1,17 @@
-"""
-Fish Audio TTS plugin for LiveKit Agents.
-
-Wraps the Fish Audio REST TTS API (POST /v1/tts) in a LiveKit-compatible
-`TTS` class so the voice pipeline can use cloned voices from Fish Audio
-for real-time telephony calls.
-
-Fish Audio API docs: https://docs.fish.audio/api-reference/
-Model used: s2.1-pro (or s2.1-pro-free for dev)
-
-Design:
-  - Implements the non-streaming `TTS.synthesize()` path via `ChunkedStream`.
-  - Fish Audio returns a chunked HTTP response of raw audio bytes (MP3/PCM).
-  - We collect the full response into a single buffer, initialize the
-    AudioEmitter with the correct MIME type, then push the bytes in one shot.
-  - This is "pseudo-streaming" — we wait for the full audio before emitting,
-    which adds latency proportional to text length. For production workloads
-    consider upgrading to the WebSocket streaming API when available.
-
-Usage:
-    tts = FishAudioTTS(
-        voice_id="<Fish Audio model _id>",
-        api_key=os.environ["FISH_AUDIO_API_KEY"],
-    )
-    # passed directly to AgentSession(tts=tts, ...)
-"""
-
 from __future__ import annotations
 
+import asyncio
 import os
-from typing import Any
+from typing import Any, AsyncIterator, TypeVar
 
 import httpx
 from livekit.agents import tts
 from livekit.agents.types import DEFAULT_API_CONNECT_OPTIONS, APIConnectOptions
 from livekit.agents._exceptions import APIConnectionError, APIStatusError
 
-# ─── Constants ───────────────────────────────────────────────────────────────
+T = TypeVar("T")
+
+# ─── Constants ─────────────────────────────────────────────────────────────────
 
 FISH_AUDIO_BASE_URL = "https://api.fish.audio"
 FISH_AUDIO_TTS_ENDPOINT = "/v1/tts"
@@ -50,6 +26,32 @@ _MIME_TYPE       = "audio/mpeg"
 # Default model — use "s2.1-pro-free" during development to avoid charges.
 # Switch to "s2.1-pro" for production quality.
 _DEFAULT_MODEL = "s2.1-pro"
+
+_TTS_STREAM_IDLE_TIMEOUT_MS = 10000 # 10 seconds
+
+
+# ─── Helpers ─────────────────────────────────────────────────────────────────
+
+async def _aiter_with_idle_timeout(
+    iterable: AsyncIterator[T],
+    timeout_ms: int,
+) -> AsyncIterator[T]:
+    """
+    Wraps an async iterator, raising APIConnectionError if no item is received
+    within the specified timeout.
+    """
+    timeout_s = timeout_ms / 1000.0
+    while True:
+        try:
+            item = await asyncio.wait_for(iterable.__anext__(), timeout=timeout_s)
+            yield item
+        except StopAsyncIteration:
+            break
+        except asyncio.TimeoutError as exc:
+            raise APIConnectionError(
+                f"Fish Audio TTS stream idle for {timeout_s}s, aborting",
+                retryable=True
+            ) from exc
 
 
 # ─── ChunkedStream ───────────────────────────────────────────────────────────
@@ -128,7 +130,10 @@ class _FishAudioChunkedStream(tts.ChunkedStream):
                         )
 
                     # Collect chunked response and push bytes to the emitter
-                    async for chunk in response.aiter_bytes():
+                    async for chunk in _aiter_with_idle_timeout(
+                        response.aiter_bytes(),
+                        timeout_ms=_TTS_STREAM_IDLE_TIMEOUT_MS
+                    ):
                         if chunk:
                             output_emitter.push(chunk)
 
@@ -140,7 +145,7 @@ class _FishAudioChunkedStream(tts.ChunkedStream):
         output_emitter.flush()
 
 
-# ─── TTS plugin ──────────────────────────────────────────────────────────────
+# ─── TTS plugin ────────────────────────────────────────────
 
 class FishAudioTTS(tts.TTS):
     """
@@ -191,7 +196,7 @@ class FishAudioTTS(tts.TTS):
         self._language   = language
         self._normalize  = normalize
 
-    # ─── Public properties ────────────────────────────────────────────────
+    # ─── Public properties ────────────────────────────────────────────
 
     @property
     def voice_id(self) -> str:
