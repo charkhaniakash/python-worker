@@ -1,13 +1,3 @@
-"""
-Persona → runtime `AgentConfig` builder.
-
-Everything the pipeline needs to start (STT settings, LLM model+temperature,
-TTS settings, initial greeting, system prompt) is produced here so the
-entrypoint is free of resolution logic.
-"""
-
-from __future__ import annotations
-
 import json
 from dataclasses import dataclass, field
 
