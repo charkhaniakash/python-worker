@@ -1,33 +1,7 @@
-"""
-Fish Audio TTS plugin for LiveKit Agents.
-
-Wraps the Fish Audio REST TTS API (POST /v1/tts) in a LiveKit-compatible
-`TTS` class so the voice pipeline can use cloned voices from Fish Audio
-for real-time telephony calls.
-
-Fish Audio API docs: https://docs.fish.audio/api-reference/
-Model used: s2.1-pro (or s2.1-pro-free for dev)
-
-Design:
-  - Implements the non-streaming `TTS.synthesize()` path via `ChunkedStream`.
-  - Fish Audio returns a chunked HTTP response of raw audio bytes (MP3/PCM).
-  - We collect the full response into a single buffer, initialize the
-    AudioEmitter with the correct MIME type, then push the bytes in one shot.
-  - This is "pseudo-streaming" — we wait for the full audio before emitting,
-    which adds latency proportional to text length. For production workloads
-    consider upgrading to the WebSocket streaming API when available.
-
-Usage:
-    tts = FishAudioTTS(
-        voice_id="<Fish Audio model _id>",
-        api_key=os.environ["FISH_AUDIO_API_KEY"],
-    )
-    # passed directly to AgentSession(tts=tts, ...)
-"""
-
 from __future__ import annotations
 
 import os
+import asyncio
 from typing import Any
 
 import httpx
@@ -35,7 +9,7 @@ from livekit.agents import tts
 from livekit.agents.types import DEFAULT_API_CONNECT_OPTIONS, APIConnectOptions
 from livekit.agents._exceptions import APIConnectionError, APIStatusError
 
-# ─── Constants ───────────────────────────────────────────────────────────────
+# ─── Constants ──────────────────────────────────────────────────────────────
 
 FISH_AUDIO_BASE_URL = "https://api.fish.audio"
 FISH_AUDIO_TTS_ENDPOINT = "/v1/tts"
@@ -50,6 +24,9 @@ _MIME_TYPE       = "audio/mpeg"
 # Default model — use "s2.1-pro-free" during development to avoid charges.
 # Switch to "s2.1-pro" for production quality.
 _DEFAULT_MODEL = "s2.1-pro"
+
+# Idle timeout for the SSE stream between chunks
+_IDLE_TIMEOUT_S = 10  # seconds
 
 
 # ─── ChunkedStream ───────────────────────────────────────────────────────────
@@ -105,7 +82,7 @@ class _FishAudioChunkedStream(tts.ChunkedStream):
 
         headers = {
             "Authorization": f"Bearer {self._fish_tts.api_key}",
-            "Content-Type":  "application/json",
+            "Content":  "application/json",
             "model":         self._fish_tts.model,
         }
 
@@ -128,9 +105,23 @@ class _FishAudioChunkedStream(tts.ChunkedStream):
                         )
 
                     # Collect chunked response and push bytes to the emitter
-                    async for chunk in response.aiter_bytes():
-                        if chunk:
-                            output_emitter.push(chunk)
+                    data_stream = response.aiter_bytes()
+                    while True:
+                        try:
+                            # Apply idle timeout for each chunk
+                            chunk = await asyncio.wait_for(
+                                data_stream.__anext__(), timeout=_IDLE_TIMEOUT_S
+                            )
+                            if chunk:
+                                output_emitter.push(chunk)
+                        except StopAsyncIteration:
+                            # End of stream, break the loop
+                            break
+                        except asyncio.TimeoutError as exc:
+                            # No chunk arrived within the idle timeout period
+                            raise APIConnectionError(
+                                f"Fish Audio TTS stream timed out (no chunk for {_IDLE_TIMEOUT_S}s)"
+                            ) from exc
 
         except httpx.TimeoutException as exc:
             raise APIConnectionError(f"Fish Audio TTS timed out: {exc}") from exc
@@ -140,7 +131,7 @@ class _FishAudioChunkedStream(tts.ChunkedStream):
         output_emitter.flush()
 
 
-# ─── TTS plugin ──────────────────────────────────────────────────────────────
+# ─── TTS plugin ────────────────────────────────────────────
 
 class FishAudioTTS(tts.TTS):
     """
@@ -191,7 +182,7 @@ class FishAudioTTS(tts.TTS):
         self._language   = language
         self._normalize  = normalize
 
-    # ─── Public properties ────────────────────────────────────────────────
+    # ─── Public properties ────────────────────────────────────────────
 
     @property
     def voice_id(self) -> str:
