@@ -1,11 +1,3 @@
-"""
-Persona → runtime `AgentConfig` builder.
-
-Everything the pipeline needs to start (STT settings, LLM model+temperature,
-TTS settings, initial greeting, system prompt) is produced here so the
-entrypoint is free of resolution logic.
-"""
-
 from __future__ import annotations
 
 import json
@@ -166,7 +158,7 @@ def default_agent_config(conv: ConvLog) -> AgentConfig:
             "name": "Rahul",
             "gender": "male",
             "voice_id": "LQ2auZHpAQ9h4azztqMT",  # ElevenLabs Indian Male (professional, clear)
-            "greeting_hi": "नमस्ते, मैं राहुल हूँ, Axis My India से बोल रहा हूँ। हम आपके समुदाय में स्वास्थ्य और कौशल के बारे में एक छोटा सर्वे कर रहे हैं। ज़्यादा समय नहीं लगेगा। क्या हम शुरू कर सकते हैं?",
+            "greeting_hi": "नमस्ते, मैं राहुल हूँ, Axis My India से बोल रहा हूँ। हम आपके समुदाय में स्वास्थ्य और कौशल के बारे में एक छोटा सर्वे कर रहे हैं। ज़्यादा समय नहीं लगेगा। क्या हम शुरू कर सकते हैं?",
             "greeting_en": "Hi, I'm Rahul, calling from Axis My India. We're doing a short survey about health and skills in your community. It won't take very long. Can we get started?"
         },
         {
@@ -298,8 +290,8 @@ async def build_config_from_persona(
 
 
 def apply_outbound_call_opening(config: AgentConfig) -> None:
-    settings = get_settings()
-    config.llm.system_prompt += settings.runtime.prompts.outbound_call_opening
+    # Placeholder: Actual logic to be implemented later.
+    pass
 
 
 def resolve_chat_language(config: AgentConfig) -> str:

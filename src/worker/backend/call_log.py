@@ -47,7 +47,7 @@ async def create_inbound_call_log(
             conv.line("INFO", "COST", "Inbound CallLog created", {"callLogId": call_log_id})
             return call_log_id
         return None
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         conv.line(
             "WARN",
             "COST",
@@ -74,5 +74,5 @@ async def report_call_usage(payload: dict[str, Any], conv: ConvLog) -> None:
             conv.line("INFO", "COST", "Call usage reported for cost calculation")
         else:
             conv.line("WARN", "COST", f"call-usage report → {resp.status_code}")
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         conv.line("WARN", "COST", f"call-usage report failed: {e}")
