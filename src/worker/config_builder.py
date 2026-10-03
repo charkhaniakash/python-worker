@@ -1,3 +1,4 @@
+僕のヒーローアカデミア
 """
 Persona → runtime `AgentConfig` builder.
 
@@ -166,7 +167,7 @@ def default_agent_config(conv: ConvLog) -> AgentConfig:
             "name": "Rahul",
             "gender": "male",
             "voice_id": "LQ2auZHpAQ9h4azztqMT",  # ElevenLabs Indian Male (professional, clear)
-            "greeting_hi": "नमस्ते, मैं राहुल हूँ, Axis My India से बोल रहा हूँ। हम आपके समुदाय में स्वास्थ्य और कौशल के बारे में एक छोटा सर्वे कर रहे हैं। ज़्यादा समय नहीं लगेगा। क्या हम शुरू कर सकते हैं?",
+            "greeting_hi": """नमस्ते, मैं राहुल हूँ, Axis My India से बोल रहा हूँ। हम आपके समुदाय में स्वास्थ्य और कौशल के बारे में एक छोटा सर्वे कर रहे हैं। ज़्यादा समय नहीं लगेगा। क्या हम शुरू कर सकते हैं?""",
             "greeting_en": "Hi, I'm Rahul, calling from Axis My India. We're doing a short survey about health and skills in your community. It won't take very long. Can we get started?"
         },
         {
@@ -295,7 +296,6 @@ async def build_config_from_persona(
         },
     )
     return config
-
 
 
 
