@@ -1,2 +1,37 @@
-src/worker/credientials/google.json
-src/worker/credientials/google.json
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Google service account key — never commit, use Secret Manager in production
+# src/worker/credientials/google.json
+
+# Build artifacts
+dist/
+build/
+*.whl
+
+# uv
+.uv/
+uv.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
