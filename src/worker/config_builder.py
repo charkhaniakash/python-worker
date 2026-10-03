@@ -1,11 +1,3 @@
-"""
-Persona → runtime `AgentConfig` builder.
-
-Everything the pipeline needs to start (STT settings, LLM model+temperature,
-TTS settings, initial greeting, system prompt) is produced here so the
-entrypoint is free of resolution logic.
-"""
-
 from __future__ import annotations
 
 import json
@@ -22,6 +14,18 @@ from .tts.factory import (
     resolve_tts_config,
     unsupported_elevenlabs_languages,
 )
+
+
+__all__ = [
+    "AgentConfig",
+    "STTConfig",
+    "LLMConfig",
+    "default_agent_config",
+    "build_config_from_persona",
+    "apply_outbound_call_opening",
+    "resolve_chat_language",
+    "validate_config",
+]
 
 
 @dataclass
