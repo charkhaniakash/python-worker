@@ -10,9 +10,9 @@ from .client import get_backend_client
 
 class PhoneLookupResult(BaseModel):
     success: bool
-    appId: str | None = None
-    partnerId: str | None = None
-    personaId: str | None = None
+    app_id: str | None = None
+    partner_id: str | None = None
+    persona_id: str | None = None
 
 
 async def fetch_app_info_by_number(phone_number: str, conv: ConvLog) -> PhoneLookupResult | None:
@@ -26,6 +26,6 @@ async def fetch_app_info_by_number(phone_number: str, conv: ConvLog) -> PhoneLoo
             conv.line("WARN", "CONFIG", f"phone-lookup → {resp.status_code}")
             return None
         return PhoneLookupResult.model_validate(resp.json())
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         conv.line("WARN", "CONFIG", f"phone-lookup failed: {e}")
         return None
