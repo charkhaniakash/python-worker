@@ -15,7 +15,7 @@ class VoiceLookupResult(BaseModel):
 
 
 class _VoiceApiMetadata(BaseModel):
-    voiceId: str | None = None
+    voice_id: str | None = None
     region: str | None = None
 
 
@@ -23,7 +23,7 @@ class _VoiceApiResponse(BaseModel):
     id: str
     provider: str
     name: str
-    displayName: str | None = None
+    display_name: str | None = None
     gender: str | None = None
     metadata: _VoiceApiMetadata | None = None
 
@@ -39,8 +39,8 @@ async def fetch_voice_details(voice_name: str, conv: ConvLog) -> VoiceLookupResu
         if data.provider == "open_ai":
             return VoiceLookupResult(provider="open_ai", voice_id=data.name, gender=data.gender)
         if data.provider == "elevenlabs":
-            if data.metadata and data.metadata.voiceId:
-                return VoiceLookupResult(provider="elevenlabs", voice_id=data.metadata.voiceId, gender=data.gender)
+            if data.metadata and data.metadata.voice_id:
+                return VoiceLookupResult(provider="elevenlabs", voice_id=data.metadata.voice_id, gender=data.gender)
             conv.line("WARN", "TTS", f"ElevenLabs voice '{voice_name}' has no metadata.voiceId")
             return None
         conv.line("WARN", "TTS", f"Unknown provider '{data.provider}' for voice '{voice_name}'")

@@ -1,19 +1,3 @@
-"""
-Worker entrypoint — one job per SIP participant.
-
-Flow:
-  1. Connect to the room, wait for the participant to join.
-  2. Resolve appId/partnerId/personaId from attributes → metadata → phone lookup.
-  3. Create the inbound CallLog (or read the outbound one from attributes).
-  4. Build AgentConfig from persona (falls back to defaults on failure).
-  5. For outbound: block until the callee answers (or bail out on rejection).
-  6. Build STT/LLM/TTS strictly from the persona's selected provider — a
-     Google-TTS persona never touches ElevenLabs (providers are never mixed).
-  7. Start AgentSession, speak greeting, block until the call ends.
-  8. Report per-call usage to the backend.
-  9. Force-exit the job subprocess so the worker recycles for the next call.
-"""
-
 from __future__ import annotations
 
 import asyncio
@@ -387,6 +371,7 @@ async def entrypoint(ctx: JobContext) -> None:
         chat_language=resolve_chat_language(config),
         ids=ids,
         chat_session_id=chat_session_id,
+        system_prompt=config.llm.system_prompt, # Added this line
         conv=conv,
     )
 
