@@ -1,5 +1,3 @@
-"""Program entrypoint: register the worker with LiveKit."""
-
 from __future__ import annotations
 
 import os
@@ -7,6 +5,7 @@ import os
 from dotenv import load_dotenv
 from livekit.agents import WorkerOptions, cli
 
+from .config_builder import apply_outbound_call_opening
 from .entrypoint import entrypoint, prewarm
 from .settings import get_settings
 
