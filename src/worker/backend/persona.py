@@ -87,7 +87,7 @@ async def fetch_persona(
                 payload = resp.json()
                 break
             conv.line("WARN", "CONFIG", f"Persona fetch attempt {attempt} → {resp.status_code}")
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             conv.line("WARN", "CONFIG", f"Persona fetch attempt {attempt} failed: {e}", {
                 "latencyMs": int((time.monotonic() - started) * 1000),
             })
