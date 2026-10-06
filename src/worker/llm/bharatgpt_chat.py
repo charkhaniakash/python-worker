@@ -14,6 +14,7 @@ the next LLM.
 
 from __future__ import annotations
 
+import asyncio
 import json
 import uuid
 from collections.abc import AsyncIterator, Callable
@@ -225,174 +226,191 @@ class BharatGptChatStream(llm.LLMStream):
             connect=self._opts.attempt_timeout_seconds,
         )
 
-        try:
-            if self._opts.on_request_start is not None:
-                self._opts.on_request_start()
-            
-            async with httpx.AsyncClient(timeout=timeout) as client:
-                async with client.stream(
-                    "POST",
-                    self._opts.chat_url,
-                    headers=headers,
-                    json=body,
-                ) as response:
-                    if response.status_code >= 400:
-                        err_body = await response.aread()
-                        raw = err_body.decode(errors="replace")[:500] if err_body else None
-                        raise APIStatusError(
-                            f"BharatGPT chat API returned {response.status_code}",
-                            status_code=response.status_code,
-                            body={"raw": raw} if raw else None,
-                            retryable=response.status_code >= 500 or response.status_code == 429,
-                        )
-
-                    async for event_name, data in _iter_sse_events(response):
-                        if event_name == "reasoning":
-                            step = data
-                            source: str | None = None
-                            try:
-                                payload = json.loads(data)
-                                if isinstance(payload, dict):
-                                    step = payload.get("step") or data
-                                    source = payload.get("source")
-                            except json.JSONDecodeError:
-                                pass
-                            if self._opts.on_reasoning is not None:
-                                self._opts.on_reasoning(step, source)
-                            continue
-
-                        if event_name == "token":
-                            try:
-                                payload = json.loads(data)
-                            except json.JSONDecodeError:
-                                continue
-                            delta = payload.get("delta") if isinstance(payload, dict) else None
-                            if not delta:
-                                continue
-
-                            # --- Multi-language JSON buffering ---
-                            # The /chat backend sometimes returns a language-keyed
-                            # JSON dict like {"en":"...", "hi":"..."} streamed as
-                            # individual token deltas.  Each fragment isn't valid
-                            # JSON on its own, so _localize_language_text fails on
-                            # each piece and the raw JSON leaks to TTS.
-                            #
-                            # Strategy: if the accumulated text starts with '{',
-                            # keep buffering until we can parse it. Once parsed,
-                            # localize and flush.  If a delta arrives that doesn't
-                            # look like JSON continuation, flush the buffer as-is
-                            # and send the new delta normally.
-                            _json_buf += delta
-
-                            # Try to localize the *full* buffer so far.
-                            localized = _localize_language_text(
-                                _json_buf, self._opts.language
+        max_attempts = 3
+        for attempt in range(1, max_attempts + 1):
+            try:
+                if self._opts.on_request_start is not None:
+                    self._opts.on_request_start()
+                
+                async with httpx.AsyncClient(timeout=timeout) as client:
+                    async with client.stream(
+                        "POST",
+                        self._opts.chat_url,
+                        headers=headers,
+                        json=body,
+                    ) as response:
+                        if response.status_code >= 400:
+                            err_body = await response.aread()
+                            raw = err_body.decode(errors="replace")[:500] if err_body else None
+                            raise APIStatusError(
+                                f"BharatGPT chat API returned {response.status_code}",
+                                status_code=response.status_code,
+                                body={"raw": raw} if raw else None,
+                                retryable=response.status_code >= 500 or response.status_code == 429,
                             )
 
-                            if localized != _json_buf:
-                                # Successfully extracted a language string from
-                                # the accumulated JSON — flush the localized text.
-                                sent_any_token = True
-                                final_answer_text += localized
-                                self._event_ch.send_nowait(
-                                    llm.ChatChunk(
-                                        id=chunk_id,
-                                        delta=llm.ChoiceDelta(
-                                            role="assistant", content=localized,
-                                        ),
-                                    )
-                                )
-                                _json_buf = ""
-                            elif not _json_buf.lstrip().startswith("{"):
-                                # Not a JSON object at all — flush immediately.
-                                sent_any_token = True
-                                final_answer_text += _json_buf
-                                self._event_ch.send_nowait(
-                                    llm.ChatChunk(
-                                        id=chunk_id,
-                                        delta=llm.ChoiceDelta(
-                                            role="assistant", content=_json_buf,
-                                        ),
-                                    )
-                                )
-                                _json_buf = ""
-                            # else: still accumulating a potential JSON dict — wait.
-                            continue
+                        async for event_name, data in _iter_sse_events(response):
+                            if event_name == "reasoning":
+                                step = data
+                                source: str | None = None
+                                try:
+                                    payload = json.loads(data)
+                                    if isinstance(payload, dict):
+                                        step = payload.get("step") or data
+                                        source = payload.get("source")
+                                except json.JSONDecodeError:
+                                    pass
+                                if self._opts.on_reasoning is not None:
+                                    self._opts.on_reasoning(step, source)
+                                continue
 
-                        if event_name == "done":
-                            # --- Flush any remaining JSON buffer ---
-                            if _json_buf:
-                                flushed = _localize_language_text(
+                            if event_name == "token":
+                                try:
+                                    payload = json.loads(data)
+                                except json.JSONDecodeError:
+                                    continue
+                                delta = payload.get("delta") if isinstance(payload, dict) else None
+                                if not delta:
+                                    continue
+
+                                # --- Multi-language JSON buffering ---
+                                # The /chat backend sometimes returns a language-keyed
+                                # JSON dict like {"en":"...", "hi":"..."} streamed as
+                                # individual token deltas.  Each fragment isn't valid
+                                # JSON on its own, so _localize_language_text fails on
+                                # each piece and the raw JSON leaks to TTS.
+                                #
+                                # Strategy: if the accumulated text starts with '{',
+                                # keep buffering until we can parse it. Once parsed,
+                                # localize and flush.  If a delta arrives that doesn't
+                                # look like JSON continuation, flush the buffer as-is
+                                # and send the new delta normally.
+                                _json_buf += delta
+
+                                # Try to localize the *full* buffer so far.
+                                localized = _localize_language_text(
                                     _json_buf, self._opts.language
                                 )
-                                if flushed:
+
+                                if localized != _json_buf:
+                                    # Successfully extracted a language string from
+                                    # the accumulated JSON — flush the localized text.
                                     sent_any_token = True
-                                    final_answer_text += flushed
+                                    final_answer_text += localized
                                     self._event_ch.send_nowait(
                                         llm.ChatChunk(
                                             id=chunk_id,
                                             delta=llm.ChoiceDelta(
-                                                role="assistant", content=flushed,
+                                                role="assistant", content=localized,
                                             ),
                                         )
                                     )
-                                _json_buf = ""
-
-                            try:
-                                payload = json.loads(data) if data else {}
-                            except json.JSONDecodeError:
-                                payload = {}
-                            if not isinstance(payload, dict):
-                                payload = {}
-                            done_evt = ChatDonePayload(
-                                id=payload.get("id"),
-                                finalAnswer=payload.get("finalAnswer"),
-                                source=payload.get("source"),
-                                latencyMs=payload.get("latencyMs"),
-                                sessionId=payload.get("sessionId"),
-                            )
-                            if self._opts.on_done is not None:
-                                self._opts.on_done(done_evt)
-
-                            answer = _localize_language_text(
-                                (done_evt.finalAnswer or "").strip(),
-                                self._opts.language,
-                            )
-                            if answer and not sent_any_token:
-                                self._event_ch.send_nowait(
-                                    llm.ChatChunk(
-                                        id=chunk_id,
-                                        delta=llm.ChoiceDelta(role="assistant", content=answer),
+                                    _json_buf = ""
+                                elif not _json_buf.lstrip().startswith("{"):
+                                    # Not a JSON object at all — flush immediately.
+                                    sent_any_token = True
+                                    final_answer_text += _json_buf
+                                    self._event_ch.send_nowait(
+                                        llm.ChatChunk(
+                                            id=chunk_id,
+                                            delta=llm.ChoiceDelta(
+                                                role="assistant", content=_json_buf,
+                                            ),
+                                        )
                                     )
+                                    _json_buf = ""
+                                # else: still accumulating a potential JSON dict — wait.
+                                continue
+
+                            if event_name == "done":
+                                # --- Flush any remaining JSON buffer ---
+                                if _json_buf:
+                                    flushed = _localize_language_text(
+                                        _json_buf, self._opts.language
+                                    )
+                                    if flushed:
+                                        sent_any_token = True
+                                        final_answer_text += flushed
+                                        self._event_ch.send_nowait( 
+                                            llm.ChatChunk(
+                                                id=chunk_id,
+                                                delta=llm.ChoiceDelta(
+                                                    role="assistant", content=flushed,
+                                                ),
+                                            )
+                                        )
+                                    _json_buf = ""
+
+                                try:
+                                    payload = json.loads(data) if data else {}
+                                except json.JSONDecodeError:
+                                    payload = {}
+                                if not isinstance(payload, dict):
+                                    payload = {}
+                                done_evt = ChatDonePayload(
+                                    id=payload.get("id"),
+                                    finalAnswer=payload.get("finalAnswer"),
+                                    source=payload.get("source"),
+                                    latencyMs=payload.get("latencyMs"),
+                                    sessionId=payload.get("sessionId"),
                                 )
-                                sent_any_token = True
-                                final_answer_text = answer
-                            elif answer and len(answer) > len(final_answer_text):
-                                remainder = answer[len(final_answer_text):]
-                                if remainder:
+                                if self._opts.on_done is not None:
+                                    self._opts.on_done(done_evt)
+
+                                answer = _localize_language_text(
+                                    (done_evt.finalAnswer or "").strip(),
+                                    self._opts.language,
+                                )
+                                if answer and not sent_any_token:
                                     self._event_ch.send_nowait(
                                         llm.ChatChunk(
                                             id=chunk_id,
-                                            delta=llm.ChoiceDelta(
-                                                role="assistant", content=remainder
-                                            ),
+                                            delta=llm.ChoiceDelta(role="assistant", content=answer),
                                         )
                                     )
-                                final_answer_text = answer
-                            break
-        except httpx.TimeoutException as exc:
-            raise APIConnectionError(
-                f"BharatGPT chat request timed out: {exc}",
-                retryable=True,
-            ) from exc
-        except httpx.HTTPError as exc:
-            raise APIConnectionError(
-                f"BharatGPT chat request failed: {exc}",
-                retryable=True,
-            ) from exc
+                                    sent_any_token = True
+                                    final_answer_text = answer
+                                elif answer and len(answer) > len(final_answer_text):
+                                    remainder = answer[len(final_answer_text):]
+                                    if remainder:
+                                        self._event_ch.send_nowait( 
+                                            llm.ChatChunk(
+                                                id=chunk_id,
+                                                delta=llm.ChoiceDelta(
+                                                    role="assistant", content=remainder
+                                                ),
+                                            )
+                                        )
+                                    final_answer_text = answer
+                                break
 
-        if not sent_any_token:
-            raise APIConnectionError(
-                "BharatGPT chat API returned no assistant tokens",
-                retryable=True,
-            )
+                if not sent_any_token:
+                    raise APIConnectionError(
+                        "BharatGPT chat API returned no assistant tokens",
+                        retryable=True,
+                    )
+                break
+
+            except (httpx.TimeoutException, httpx.HTTPError, APIStatusError, APIConnectionError) as exc:
+                retryable = True
+                if isinstance(exc, (APIStatusError, APIConnectionError)):
+                    retryable = getattr(exc, "retryable", True)
+
+                if not sent_any_token and retryable and attempt < max_attempts:
+                    backoff_delay = 1.0 * attempt
+                    await asyncio.sleep(backoff_delay)
+                    continue
+                else: 
+                    if isinstance(exc, httpx.TimeoutException):
+                        raise APIConnectionError(
+                            f"BharatGPT chat request timed out: {exc}",
+                            retryable=False if sent_any_token else True,
+                        ) from exc
+                    elif isinstance(exc, httpx.HTTPError):
+                        raise APIConnectionError(
+                            f"BharatGPT chat request failed: {exc}",
+                            retryable=False if sent_any_token else True,
+                        ) from exc
+                    else:
+                        raise exc
+"
